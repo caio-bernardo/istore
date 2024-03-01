@@ -3,6 +3,7 @@ use axum::extract::FromRef;
 use sqlx::{Pool, Sqlite, SqlitePool};
 
 mod base;
+pub mod task;
 pub mod user;
 
 type Db = Pool<Sqlite>;
@@ -13,6 +14,10 @@ pub struct ModelManager {
 }
 
 impl ModelManager {
+    pub async fn new() -> Self {
+        Self::new_db_pool().await.unwrap()
+    }
+
     async fn new_db_pool() -> Result<Self, Error> {
         let db = SqlitePool::connect("sqlite://database/database.db").await?;
         Ok(ModelManager { db })

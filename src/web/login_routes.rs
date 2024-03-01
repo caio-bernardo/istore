@@ -10,10 +10,13 @@ use serde_json::json;
 use tower_cookies::{Cookie, CookieManagerLayer, Cookies};
 use tracing::info;
 
-use crate::model::{self, user::User};
+use crate::{
+    model::{self, user::User},
+    AppState,
+};
 
+use super::model::ModelManager;
 use super::Error;
-use super::ModelManager;
 
 #[derive(Debug, Deserialize)]
 struct LoginPayload {
@@ -28,7 +31,7 @@ struct SignUpPayload {
     confirm_password: String,
 }
 
-pub fn login_routes(state: ModelManager) -> Router {
+pub fn login_routes(state: AppState) -> Router {
     Router::new()
         .route("/login", post(login_handler))
         .route("/logout", post(logout_handler))

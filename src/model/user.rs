@@ -8,6 +8,7 @@ use super::{
 
 #[derive(Debug, FromRow)]
 pub struct User {
+    id: i64,
     username: String,
     password: String,
 }
@@ -47,8 +48,8 @@ impl UserModelControler {
     ) -> Result<Option<UserForLogin>, Error> {
         let db = mm.db();
 
-        let sql = format!("SELECT * FROM {0} WHERE name=($1)", Self::TABLE);
-        let user: Option<UserForLogin> = sqlx::query_as(&sql)
+        let user: Option<UserForLogin> = sqlx::query_as("SELECT * FROM ?1 WHERE name=(?2)")
+            .bind(Self::TABLE)
             .bind(username)
             .fetch_optional(db)
             .await?;
